@@ -235,6 +235,24 @@ See https://github.com/ravsii/tree-sitter-d2/blob/main/queries/highlights.scm")
 
 The value is suitable for `treesit-simple-indent-rules'.")
 
+(defconst d2-syntax-propertize-query
+  '((label_codeblock _ @start (_) (_) _ @end)))
+
+(defun d2-syntax-propertize-function (start end)
+  "Propertize string delimiters between START and END."
+  (let ((syntax (string-to-syntax "|")))
+    (dolist (capture (treesit-query-capture
+                      'd2 d2-syntax-propertize-query start end))
+      (cond
+       ((eq 'start (car capture))
+        (put-text-property (treesit-node-start (cdr capture))
+                           (1+ (treesit-node-start (cdr capture)))
+                           'syntax-table syntax))
+       (t
+        (put-text-property (1- (treesit-node-end (cdr capture)))
+                           (treesit-node-end (cdr capture))
+                           'syntax-table syntax))))))
+
 ;;;###autoload
 (define-derived-mode d2-mode prog-mode "D2"
   "Major mode for D2 diagram files."
@@ -251,6 +269,8 @@ The value is suitable for `treesit-simple-indent-rules'.")
                  :override t
                  d2-mode-font-lock-queries))
     (setq-local treesit-simple-indent-rules d2-indent-rules)
+    (setq-local syntax-propertize-function
+                #'d2-syntax-propertize-function)
     (treesit-major-mode-setup)))
 
 ;;;###autoload
