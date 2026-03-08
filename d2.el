@@ -456,6 +456,8 @@ The value is suitable for `treesit-simple-indent-rules'.")
 (defun d2-preview-display ()
   "Display the preview buffer."
   (interactive)
+  (unless d2-preview-mode
+    (d2-preview-mode))
   (unless d2--preview-state
     (user-error "Buffer is not associated with a preview"))
   (d2--with-preview-state d2--preview-state
