@@ -101,7 +101,8 @@ The value is suitable for the `treesit-language-source-alist'.")
 (defconst d2-mode-font-lock-queries
   `(([(comment) (block_comment)] @font-lock-comment-face)
 
-    ([(label) (label_codeblock) (label_array)] @font-lock-string-face)
+    ((codeblock_language) @font-lock-keyword-face)
+    ([(label)  (label_array)] @font-lock-string-face)
 
     (((label) @font-lock-keyword-face)
      (:match ,(regexp-opt '("null" "Null" "NULL")) @font-lock-keyword-face))
